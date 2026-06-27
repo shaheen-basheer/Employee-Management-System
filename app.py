@@ -8,18 +8,39 @@ from modules.view_employee import show_view_employee
 from modules.edit_employee import show_edit_employee
 from modules.delete_employee import show_delete_employee
 
+# ----------------------------------------
+# Create Database Tables
+# ----------------------------------------
 create_tables()
 
+# ----------------------------------------
+# Page Configuration
+# ----------------------------------------
 st.set_page_config(
-    page_title="Employee Management System",
+    page_title="EMS Dashboard",
     page_icon="👨‍💼",
     layout="wide"
 )
 
+# ----------------------------------------
+# Main Title
+# ----------------------------------------
 st.title("👨‍💼 Employee Management System")
 
+st.caption(
+    "A Python + Streamlit + SQLite application for managing employees."
+)
+
+st.divider()
+
+# ----------------------------------------
+# Sidebar
+# ----------------------------------------
+st.sidebar.title("👨‍💼 EMS")
+st.sidebar.markdown("---")
+
 menu = st.sidebar.selectbox(
-    "Navigation",
+    "📂 HR Management",
     [
         "Home",
         "Add Employee",
@@ -28,6 +49,15 @@ menu = st.sidebar.selectbox(
         "Delete Employee"
     ]
 )
+
+st.sidebar.markdown("---")
+st.sidebar.info(
+    "Employee Management System\n\nVersion 1.0"
+)
+
+# ----------------------------------------
+# Navigation
+# ----------------------------------------
 
 if menu == "Home":
     show_home()

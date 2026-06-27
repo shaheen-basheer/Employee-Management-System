@@ -2,6 +2,9 @@ from database import get_connection
 import pandas as pd
 
 
+# -----------------------------
+# Add Employee
+# -----------------------------
 def add_employee(name, age, gender, department, designation, joining_date, salary):
 
     conn = get_connection()
@@ -18,6 +21,9 @@ def add_employee(name, age, gender, department, designation, joining_date, salar
     conn.close()
 
 
+# -----------------------------
+# Get All Employees
+# -----------------------------
 def get_all_employees():
 
     conn = get_connection()
@@ -32,6 +38,9 @@ def get_all_employees():
     return df
 
 
+# -----------------------------
+# Get One Employee
+# -----------------------------
 def get_employee(emp_id):
 
     conn = get_connection()
@@ -47,8 +56,19 @@ def get_employee(emp_id):
     return df
 
 
-def update_employee(emp_id, name, age, gender, department,
-                    designation, joining_date, salary):
+# -----------------------------
+# Update Employee
+# -----------------------------
+def update_employee(
+    emp_id,
+    name,
+    age,
+    gender,
+    department,
+    designation,
+    joining_date,
+    salary
+):
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -80,10 +100,9 @@ def update_employee(emp_id, name, age, gender, department,
     conn.close()
 
 
-# -------------------------
-# NEW FUNCTION
-# -------------------------
-
+# -----------------------------
+# Delete Employee
+# -----------------------------
 def delete_employee(emp_id):
 
     conn = get_connection()
@@ -96,3 +115,32 @@ def delete_employee(emp_id):
 
     conn.commit()
     conn.close()
+
+
+# -----------------------------
+# Dashboard Statistics
+# -----------------------------
+def get_dashboard_stats():
+
+    df = get_all_employees()
+
+    if df.empty:
+        return {
+            "total": 0,
+            "average_salary": 0,
+            "departments": 0,
+            "male": 0,
+            "female": 0,
+            "highest_salary": 0,
+            "lowest_salary": 0
+        }
+
+    return {
+        "total": len(df),
+        "average_salary": int(df["salary"].mean()),
+        "departments": df["department"].nunique(),
+        "male": len(df[df["gender"] == "Male"]),
+        "female": len(df[df["gender"] == "Female"]),
+        "highest_salary": int(df["salary"].max()),
+        "lowest_salary": int(df["salary"].min())
+    }

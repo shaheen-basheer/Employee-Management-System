@@ -12,28 +12,23 @@ def show_view_employee():
         st.warning("No employees found.")
         return
 
-    # ----------------------------
-    # Search Box
-    # ----------------------------
+    col1, col2 = st.columns(2)
 
-    search = st.text_input(
-        "🔍 Search Employee by Name"
-    )
+    with col1:
+        search = st.text_input(
+            "🔍 Search Employee"
+        )
 
-    # ----------------------------
-    # Department Filter
-    # ----------------------------
+    with col2:
 
-    departments = ["All"] + sorted(df["department"].unique().tolist())
+        departments = ["All"] + sorted(
+            df["department"].unique().tolist()
+        )
 
-    selected_department = st.selectbox(
-        "Department",
-        departments
-    )
-
-    # ----------------------------
-    # Apply Search
-    # ----------------------------
+        department = st.selectbox(
+            "🏢 Department",
+            departments
+        )
 
     if search:
 
@@ -44,27 +39,36 @@ def show_view_employee():
             )
         ]
 
-    # ----------------------------
-    # Apply Department Filter
-    # ----------------------------
-
-    if selected_department != "All":
+    if department != "All":
 
         df = df[
-            df["department"] == selected_department
+            df["department"] == department
         ]
 
-    # ----------------------------
-    # Show Employee Count
-    # ----------------------------
+    st.success(f"Employees Found : {len(df)}")
 
-    st.success(f"Total Employees : {len(df)}")
+    display_df = df[[
+        "emp_id",
+        "name",
+        "department",
+        "designation",
+        "salary"
+    ]].copy()
 
-    # ----------------------------
-    # Display Table
-    # ----------------------------
+    display_df.columns = [
+        "ID",
+        "Name",
+        "Department",
+        "Designation",
+        "Salary"
+    ]
+
+    display_df["Salary"] = display_df["Salary"].apply(
+        lambda x: f"₹{x:,.0f}"
+    )
 
     st.dataframe(
-        df,
-        use_container_width=True
+        display_df,
+        use_container_width=True,
+        hide_index=True
     )
