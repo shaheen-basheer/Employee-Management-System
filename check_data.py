@@ -1,9 +1,7 @@
-# check_data.py
-
-import sqlite3
 import pandas as pd
+from database import get_connection
 
-conn = sqlite3.connect("employee.db")
+conn = get_connection()
 
 df = pd.read_sql_query(
     "SELECT * FROM employees",
