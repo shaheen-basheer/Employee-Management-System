@@ -9,6 +9,11 @@ from modules.view_employee import show_view_employee
 from modules.edit_employee import show_edit_employee
 from modules.delete_employee import show_delete_employee
 from modules.attendance import show_attendance
+from modules.salary import show_salary
+from modules.salary_history import show_salary_history
+from modules.salary_slip import show_salary_slip
+from modules.salary_raise import show_salary_raise
+
 
 create_tables()
 
@@ -38,7 +43,11 @@ menu = st.sidebar.selectbox(
         "Edit Employee",
         "Delete Employee",
         "Mark Attendance",
-        "Attendance Report"
+        "Attendance Report",
+        "Generate Salary",
+        "Salary History",
+        "Salary Slip",
+        "Salary Raise Tracking"
     ]
 )
 
@@ -68,3 +77,15 @@ elif menu == "Mark Attendance":
 
 elif menu == "Attendance Report":
     show_attendance_report()
+
+elif menu == "Generate Salary":
+    show_salary()
+
+elif menu == "Salary History":
+    show_salary_history()
+
+elif menu == "Salary Slip":
+    show_salary_slip()
+
+elif menu == "Salary Raise Tracking":
+    show_salary_raise()
