@@ -154,3 +154,103 @@ def get_salary_raise_history(emp_id):
     conn.close()
 
     return df
+
+
+# =====================================================
+# DASHBOARD ANALYTICS
+# =====================================================
+
+# ----------------------------------------
+# Total Payroll
+# ----------------------------------------
+
+def get_total_payroll():
+
+    conn = get_connection()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT SUM(net_salary)
+        FROM salary
+        """
+    )
+
+    result = cursor.fetchone()[0]
+
+    conn.close()
+
+    if result is None:
+        return 0
+
+    return float(result)
+
+
+# ----------------------------------------
+# Top 5 Highest Paid Employees
+# ----------------------------------------
+
+def get_top_paid_employees():
+
+    conn = get_connection()
+
+    df = pd.read_sql_query(
+        """
+        SELECT
+
+            employees.name,
+            MAX(salary.net_salary) AS net_salary
+
+        FROM salary
+
+        JOIN employees
+
+        ON salary.emp_id = employees.emp_id
+
+        GROUP BY employees.name
+
+        ORDER BY net_salary DESC
+
+        LIMIT 5
+        """,
+        conn
+    )
+
+    conn.close()
+
+    return df
+
+
+# ----------------------------------------
+# Department Payroll
+# ----------------------------------------
+
+def get_department_payroll():
+
+    conn = get_connection()
+
+    df = pd.read_sql_query(
+        """
+        SELECT
+
+            employees.department,
+
+            SUM(salary.net_salary) AS payroll
+
+        FROM salary
+
+        JOIN employees
+
+        ON salary.emp_id = employees.emp_id
+
+        GROUP BY employees.department
+
+        ORDER BY payroll DESC
+        """,
+        conn
+    )
+
+    conn.close()
+
+    return df

@@ -144,3 +144,63 @@ def get_dashboard_stats():
         "highest_salary": int(df["salary"].max()),
         "lowest_salary": int(df["salary"].min())
     }
+
+
+# =====================================================
+# DASHBOARD ANALYTICS
+# =====================================================
+
+# Department-wise Employee Count
+def get_department_count():
+
+    df = get_all_employees()
+
+    if df.empty:
+        return pd.DataFrame()
+
+    return (
+        df.groupby("department")
+        .size()
+        .reset_index(name="Employees")
+    )
+
+
+# Salary Distribution
+def get_salary_distribution():
+
+    df = get_all_employees()
+
+    if df.empty:
+        return pd.DataFrame()
+
+    return df[["name", "salary"]]
+
+
+# Gender Distribution
+def get_gender_distribution():
+
+    df = get_all_employees()
+
+    if df.empty:
+        return pd.DataFrame()
+
+    return (
+        df.groupby("gender")
+        .size()
+        .reset_index(name="Employees")
+    )
+
+
+# Department Salary Average
+def get_department_salary():
+
+    df = get_all_employees()
+
+    if df.empty:
+        return pd.DataFrame()
+
+    return (
+        df.groupby("department")["salary"]
+        .mean()
+        .reset_index()
+    )

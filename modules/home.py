@@ -1,159 +1,202 @@
 import streamlit as st
-import pandas as pd
+import plotly.express as px
 
 from employee import (
     get_dashboard_stats,
-    get_all_employees
+    get_department_count,
+    get_salary_distribution,
+    get_gender_distribution,
+    get_department_salary
+)
+
+from salary import (
+    get_total_payroll,
+    get_top_paid_employees,
+    get_department_payroll
 )
 
 
 def show_home():
 
-    st.header("🏠 Employee Dashboard")
+    st.header("📊 Employee Management Dashboard")
 
     stats = get_dashboard_stats()
 
-    # ----------------------------
-    # Dashboard Cards
-    # ----------------------------
+    total_payroll = get_total_payroll()
 
-    col1, col2, col3, col4 = st.columns(4)
+    # ==========================================
+    # KPI CARDS
+    # ==========================================
+
+    c1, c2, c3, c4 = st.columns(4)
+
+    with c1:
+        st.metric(
+            "👥 Total Employees",
+            stats["total"]
+        )
+
+    with c2:
+        st.metric(
+            "💰 Avg Salary",
+            f"₹ {stats['average_salary']:,}"
+        )
+
+    with c3:
+        st.metric(
+            "💵 Total Payroll",
+            f"₹ {int(total_payroll):,}"
+        )
+
+    with c4:
+        st.metric(
+            "🏢 Departments",
+            stats["departments"]
+        )
+
+    st.divider()
+
+    # ==========================================
+    # FIRST ROW
+    # ==========================================
+
+    col1, col2 = st.columns(2)
 
     with col1:
-        st.metric("👥 Employees", stats["total"])
+
+        st.subheader("🏢 Department-wise Employee Count")
+
+        dept_df = get_department_count()
+
+        if not dept_df.empty:
+
+            fig = px.bar(
+                dept_df,
+                x="department",
+                y="Employees",
+                text="Employees",
+                color="Employees"
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
     with col2:
-        st.metric("💰 Avg Salary", f"₹{stats['average_salary']:,}")
 
-    with col3:
-        st.metric("🏢 Departments", stats["departments"])
+        st.subheader("💰 Salary Distribution")
 
-    with col4:
-        st.metric("👨 Male", stats["male"])
+        salary_df = get_salary_distribution()
 
-    st.divider()
+        if not salary_df.empty:
 
-    # ----------------------------
-    # Salary Statistics
-    # ----------------------------
+            fig = px.histogram(
+                salary_df,
+                x="salary",
+                nbins=10
+            )
 
-    col5, col6 = st.columns(2)
-
-    with col5:
-        st.metric(
-            "💸 Highest Salary",
-            f"₹{stats['highest_salary']:,}"
-        )
-
-    with col6:
-        st.metric(
-            "💵 Lowest Salary",
-            f"₹{stats['lowest_salary']:,}"
-        )
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
     st.divider()
 
-    df = get_all_employees()
+    # ==========================================
+    # SECOND ROW
+    # ==========================================
 
-    if df.empty:
-        st.info("No employees available.")
-        return
+    col1, col2 = st.columns(2)
 
-    # ----------------------------
-    # Charts
-    # ----------------------------
-
-    col7, col8 = st.columns(2)
-
-    with col7:
-
-        st.subheader("📊 Employees by Department")
-
-        dept = (
-            df.groupby("department")
-            .size()
-            .reset_index(name="Employees")
-            .set_index("department")
-        )
-
-        st.bar_chart(dept)
-
-    with col8:
+    with col1:
 
         st.subheader("👨 Gender Distribution")
 
-        gender = (
-            df.groupby("gender")
-            .size()
-            .reset_index(name="Count")
-            .set_index("gender")
-        )
+        gender_df = get_gender_distribution()
 
-        st.bar_chart(gender)
+        if not gender_df.empty:
 
-    st.divider()
+            fig = px.pie(
+                gender_df,
+                names="gender",
+                values="Employees",
+                hole=0.45
+            )
 
-    # ----------------------------
-    # Recent Employees
-    # ----------------------------
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
-    st.subheader("🆕 Recent Employees")
+    with col2:
 
-    display_df = df[[
-        "emp_id",
-        "name",
-        "department",
-        "designation",
-        "salary"
-    ]].copy()
+        st.subheader("💼 Average Salary by Department")
 
-    display_df.columns = [
-        "ID",
-        "Name",
-        "Department",
-        "Designation",
-        "Salary"
-    ]
+        dept_salary = get_department_salary()
 
-    display_df["Salary"] = display_df["Salary"].apply(
-        lambda x: f"₹{x:,.0f}"
-    )
+        if not dept_salary.empty:
 
-    st.dataframe(
-        display_df.tail(5),
-        use_container_width=True,
-        hide_index=True
-    )
+            fig = px.bar(
+                dept_salary,
+                x="salary",
+                y="department",
+                orientation="h",
+                text_auto=".2s"
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
     st.divider()
 
-    # ----------------------------
-    # Department Summary
-    # ----------------------------
+    # ==========================================
+    # THIRD ROW
+    # ==========================================
 
-    st.subheader("🏢 Department Summary")
+    col1, col2 = st.columns(2)
 
-    summary = (
-        df.groupby("department")
-        .agg(
-            Employees=("emp_id", "count"),
-            Average_Salary=("salary", "mean")
-        )
-        .reset_index()
-    )
+    with col1:
 
-    summary["Average_Salary"] = summary["Average_Salary"].apply(
-        lambda x: f"₹{x:,.0f}"
-    )
+        st.subheader("🏆 Top 5 Highest Paid Employees")
 
-    summary.columns = [
-        "Department",
-        "Employees",
-        "Average Salary"
-    ]
+        top_df = get_top_paid_employees()
 
-    st.dataframe(
-        summary,
-        use_container_width=True,
-        hide_index=True
-    )
+        if not top_df.empty:
+
+            fig = px.bar(
+                top_df,
+                x="net_salary",
+                y="name",
+                orientation="h",
+                text="net_salary",
+                color="net_salary"
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
+
+    with col2:
+
+        st.subheader("🏢 Department Payroll")
+
+        payroll_df = get_department_payroll()
+
+        if not payroll_df.empty:
+
+            fig = px.pie(
+                payroll_df,
+                names="department",
+                values="payroll",
+                hole=0.45
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
