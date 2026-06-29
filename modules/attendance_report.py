@@ -6,6 +6,8 @@ from attendance import (
     calculate_monthly_attendance
 )
 
+from utils import export_dataframe
+
 
 def show_attendance_report():
 
@@ -119,3 +121,16 @@ def show_attendance_report():
             use_container_width=True,
             hide_index=True
         )
+
+    st.divider()
+
+    # ----------------------------------
+    # Export
+    # ----------------------------------
+
+    st.subheader("📤 Export Attendance Report")
+
+    export_dataframe(
+        summary,
+        "attendance_report"
+    )

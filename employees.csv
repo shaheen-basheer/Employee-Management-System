@@ -1,0 +1,9 @@
+emp_id,name,age,gender,department,designation,joining_date,salary
+1,Rahul,27,Male,IT,Developer,2024-01-10,45000.0
+2,Anjali,24,Female,HR,HR Executive,2024-02-15,40000.0
+3,Vikram,56,Male,Finance,Accountant,2023-11-20,50000.0
+4,Priya,26,Female,IT,Tester,2024-03-01,42000.0
+5,Arjun,29,Male,Sales,Manager,2023-12-05,55000.0
+6,shaheen,18,Male,IT,bejd,2026-06-27,90000.0
+9,neymar,18,Male,IT,software developer,2026-06-27,30000.0
+10,messi,18,Male,HR,interviewer,2026-06-27,40000.0

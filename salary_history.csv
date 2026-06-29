@@ -1,0 +1,5 @@
+id,emp_id,name,month,basic_salary,tax,pf,net_salary
+4,1,Rahul,august 2026,80000.0,4500.0,3000.0,77500.0
+1,1,Rahul,June 2026,50000.0,2000.0,4000.0,49000.0
+2,2,Anjali,June 2026,30000.0,1500.0,2500.0,29000.0
+3,1,Rahul,July 2026,74000.0,4500.0,3000.0,71500.0

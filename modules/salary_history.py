@@ -1,6 +1,7 @@
 import streamlit as st
 
 from salary import get_salary_history
+from utils import export_dataframe
 
 
 def show_salary_history():
@@ -32,4 +33,13 @@ def show_salary_history():
         df,
         use_container_width=True,
         hide_index=True
+    )
+
+    st.divider()
+
+    st.subheader("📤 Export Salary History")
+
+    export_dataframe(
+        df,
+        "salary_history"
     )

@@ -1,6 +1,5 @@
 import sqlite3
 
-
 DATABASE_NAME = "employee.db"
 
 
@@ -17,6 +16,10 @@ def create_tables():
     conn = get_connection()
     cursor = conn.cursor()
 
+    # ======================================
+    # Employees Table
+    # ======================================
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS employees(
         emp_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +33,10 @@ def create_tables():
     )
     """)
 
+    # ======================================
+    # Attendance Table
+    # ======================================
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS attendance(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +47,10 @@ def create_tables():
     )
     """)
 
+    # ======================================
+    # Salary Table
+    # ======================================
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS salary(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,6 +60,24 @@ def create_tables():
         pf REAL,
         net_salary REAL,
         month TEXT,
+        FOREIGN KEY(emp_id) REFERENCES employees(emp_id)
+    )
+    """)
+
+    # ======================================
+    # Leave Requests Table
+    # ======================================
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS leave_requests(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        emp_id INTEGER,
+        leave_type TEXT,
+        start_date TEXT,
+        end_date TEXT,
+        reason TEXT,
+        status TEXT DEFAULT 'Pending',
+        applied_on TEXT,
         FOREIGN KEY(emp_id) REFERENCES employees(emp_id)
     )
     """)

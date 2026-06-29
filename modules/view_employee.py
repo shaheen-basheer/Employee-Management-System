@@ -1,5 +1,7 @@
 import streamlit as st
+
 from employee import get_all_employees
+from utils import export_dataframe
 
 
 def show_view_employee():
@@ -15,6 +17,7 @@ def show_view_employee():
     col1, col2 = st.columns(2)
 
     with col1:
+
         search = st.text_input(
             "🔍 Search Employee"
         )
@@ -71,4 +74,13 @@ def show_view_employee():
         display_df,
         use_container_width=True,
         hide_index=True
+    )
+
+    st.divider()
+
+    st.subheader("📤 Export Employee Data")
+
+    export_dataframe(
+        df,
+        "employees"
     )
